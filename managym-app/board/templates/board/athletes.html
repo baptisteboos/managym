@@ -1,0 +1,69 @@
+{% extends "board/base.html" %}
+
+{% block app_content %}
+<div class="row">
+  <div class="col-md-8">
+    <h1>{{ _('Athletes') }}</h1>  
+  </div>
+  {% if athletes %}
+  <div class="col-md-4">
+    <form method="get" action="#">
+      <div class="form-group">
+        <p style="color: red;">Search bar here</p>
+      </div>
+    </form>
+  </div>
+  {% endif %}
+</div>  
+{% if athletes %}
+<div class="row">
+  <div class="table-responsive">
+    <table class="table table-hover text-center">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col" class="text-center">{{ _('First') }}</th>
+          <th scope="col" class="text-center">{{ _('Last') }}</th>
+          <th scope="col" class="text-center">{{ _('Date of birth') }}</th>
+          <th scope="col" class="text-center">{{ _('Phone') }}</th>
+          <th scope="col" class="text-center">{{ _('Email') }}</th>
+          <th scope="col" class="text-center">{{ _('Group') }}</th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for athlete in athletes %}
+          <tr>
+            <td>{{ athlete.first_name }}</td>
+            <td>{{ athlete.last_name }}</td>
+            <td>{{ athlete.birth_date }}</td>
+            <td>{{ athlete.phone_number }}</td>
+            <td>{{ athlete.email }}</td>
+            <td>{{ athlete.group.name }}</td>
+            <td class="text-right">
+              <a href="{% url "board:athlete_detail" athlete.id %}"><span class="fas fa-user"></span> {{ _('Profile') }}</a>
+            </td>
+          </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <!-- Pagination -->
+  <div>
+  <nav aria-label="...">
+    <ul class="pagination justify-content-end">
+      <li class="page-item {% if not athletes.has_previous %}disabled{% endif %}">
+        <a class="page-link" href="{% if athletes.has_previous %}
+        ?page={{ athletes.previous_page_number }}{% endif%}">{{ _('Previous') }}</a>
+      </li>
+      <li class="page-item {% if not athletes.has_next %}disabled{% endif %}">
+        <a class="page-link" href="{% if athletes.has_next %}
+        ?page={{ athletes.next_page_number }}{% endif%}">{{ _('Next') }}</a>
+      </li>
+    </ul>
+  </nav>
+  </div>
+</div>
+{% else %}
+<p>{{ _('No athlete') }}</p>
+{% endif %}
+{% endblock %}

@@ -62,7 +62,7 @@ class Group(models.Model):
     """Model representing a group of athletes."""
 
     name = models.CharField(max_length=120, default="New group")
-    users = models.ManyToManyField(User, related_name='groups_of_athletes')
+    users = models.ManyToManyField(User, related_name='groups_of_athletes', null=True, blank=True)
 
     class Meta:
         verbose_name = "Group of athletes"
