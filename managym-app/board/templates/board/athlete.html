@@ -1,0 +1,76 @@
+{% extends "board/base.html" %}
+
+{% block app_content %}
+  <!-- Profile of the athlete -->
+<br>	  
+<div class="row">
+  <div class="col-md-3 text-center">
+    <img src="{{ athlete.picture }}"> 
+  </div>
+  <div class="col-md-9">
+    <table class="table table-sm table-borderless">
+      <tr>
+        <td colspan="2">
+            <h1>{{ athlete.first_name|title }} {{ athlete.last_name|title }}</h1>
+        </td>
+      </tr>
+      <tr>
+        <td>
+            {{ _('Date of birth: ') }}<b>{{ athlete.birth_date }}</b>
+        </td>
+        <td>
+            {{ _('Gender: ') }}<b>{{ athlete.gend|title }}</b>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          {{ _('Phone number 1: ') }}<b>{{ athlete.phone_number }}</b>
+        </td>
+        <td>
+          {{ _('Email 1: ') }}<b>{{ athlete.email }}</b>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          {{ _('Phone number 2: ') }}<b>{{ athlete.phone_number_2 }}</b>
+        </td>
+        <td>
+          {{ _('Email 2: ') }}<b>{{ athlete.email_2 }}</b>
+        </td>
+      </tr>
+      {% if athlete.group %}
+      <tr>
+        <td colspan="2">
+          {{ _('Group: ') }}<b>{{ athlete.group.name }}</b>
+        </td>
+      {% endif %}
+      </tr>
+    </table>
+  </div> 
+</div>
+
+<!-- Nav tab -->
+<ul class="nav nav-tabs" id="athlete-tabs" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link" id="targets-tab" data-toggle="tab" href="#targets-content" role="tab" aria-controls="targets" aria-selected="false">Targets</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="injuries-tab" data-toggle="tab" href="#injuries-content" role="tab" aria-controls="injuries" aria-selected="false">Injuries</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="comments-tab" data-toggle="tab" href="#comments-content" role="tab" aria-controls="comments" aria-selected="false">Comments</a>
+  </li>
+</ul>
+<div class="tab-content" id="athlete-tabsContent">
+  <div class="tab-pane fade active" id="targets-content" role="tabpanel" aria-labelledby="targets-tab">
+    {# {{ data|json_script:"tags-data" }} #}
+    {% include "board/_content_target_tab.html" %}
+  </div>
+  <div class="tab-pane fade" id="injuries-content" role="tabpanel" aria-labelledby="injuries-tab">
+    {# {% include "athlete/_content_injuries_tab.html" %} #}
+  </div>
+  <div class="tab-pane fade" id="comments-content" role="tabpanel" aria-labelledby="comments-tab">
+     {# {% include "" %} #}
+  </div>
+</div>
+{% endblock %}

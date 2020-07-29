@@ -1,0 +1,39 @@
+<div class="table-responsive">
+	<table class="table table-bordered target-results">
+		<thead>
+			<tr>
+				<th scope="col">Apparatus</th>
+				<th scope="col" colspan="3">Target</th>
+				<th scope="col" colspan="6">Results</th>
+			</tr>
+			<tr class="active">
+				<th scope="col"></th>
+				<th scope="col">SV</th>
+				<th scope="col">E</th>
+				<th scope="col">Score</th>
+				<th scope="col">SV</th>
+				<th scope="col">target (%)</th>
+				<th scope="col">E</th>
+				<th scope="col">target (%)</th>
+				<th scope="col">Score</th>
+				<th scope="col">target (%)</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for target in event.targetresult_set.all %}
+			<tr class="apparatus {{ target.apparatus.pk }}">
+				<th class="active">{{ target.apparatus.name }}</th>
+				<td class="tsv" contenteditable="True">{{ target.target_sv }}</td>
+				<td class="tex" contenteditable="True">{{ target.target_ex }}</td>
+				<td class="ttot"></td>
+				<td class="rsv" contenteditable="True">{{ target.result_sv }}</td>
+				<td class="trsv active"></td>
+				<td class="rex" contenteditable="True">{{ target.result_ex }}</td>
+				<td class="trex active"></td>
+				<td class="rtot"></td>
+				<td class="trtot active"></td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>

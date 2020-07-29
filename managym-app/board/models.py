@@ -1,3 +1,5 @@
+from hashlib import md5
+
 from django.db import models
 from django.contrib.auth.models import User
 from dj.choices import Choices, Choice
@@ -17,15 +19,17 @@ class TargetResult(models.Model):
     class Meta:
         verbose_name = "TargetResult"
         verbose_name_plural = "TargetsResults"
+        unique_together = [['athlete', 'apparatus', 'event']]
 
     def __str__(self):
         return f'{self.athlete} - {self.event} - {self.apparatus}'
     
 
 class Gender(Choices):
-    male = Choice("male")
-    female = Choice("female")
-    not_specified = Choice("not specified")
+    male = Choice("male").extra(label="Male")
+    female = Choice("female").extra(label="Female")
+    not_specified = Choice("not specified").extra(label="Not specified")
+
 
 class Athlete(models.Model):
     """Model representing an athlete."""
@@ -53,16 +57,25 @@ class Athlete(models.Model):
         """String for representing the Athlete object."""
         return f'{self.first_name} {self.last_name}'
 
-    def picture(self, size):
+    def picture(self, size=192):
         email = self.email or 'email@test.com'
         digest = md5(email.lower().encode('utf-8')).hexdigest()
         return f'https://www.gravatar.com/avatar/{digest}?d=identicon&s={size}'
+
+    def gend(self):
+        gender = Gender.from_id(self.gender)
+        if gender == Gender.male:
+            return 'male'
+        elif gender == Gender.female:
+            return 'female'
+        else:
+            return 'not specified'
 
 class Group(models.Model):
     """Model representing a group of athletes."""
 
     name = models.CharField(max_length=120, default="New group")
-    users = models.ManyToManyField(User, related_name='groups_of_athletes', null=True, blank=True)
+    users = models.ManyToManyField(User, related_name='groups_of_athletes', blank=True)
 
     class Meta:
         verbose_name = "Group of athletes"

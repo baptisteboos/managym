@@ -2,7 +2,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
-from .models import Athlete
+from .models import Athlete, Event
+
 
 def index(request):
     athletes = Athlete.objects.all()
@@ -33,4 +34,12 @@ def listing(request):
     return render(request, 'board/athletes.html', context)
 
 def athlete_detail(request, athlete_id):
-	return HttpResponse('Hello')
+    athlete = get_object_or_404(Athlete, id=athlete_id)
+    events_participated = Event.objects.filter(targetresult__athlete__id=athlete_id).distinct().all()
+
+    context = {
+        'title': 'Athlete',
+        'athlete': athlete,
+        'events_participated': events_participated,
+    }
+    return render(request, 'board/athlete.html', context)
