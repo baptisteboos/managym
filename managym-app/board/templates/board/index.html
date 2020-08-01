@@ -1,6 +1,6 @@
-{% extends "board/base.html" %}
+{% extends "base.html" %}
 
-{% block app_content %}
+{% block content %}
   <div class="row">
     <h1>{{ _('Hello') }} {{ name }}</h1>
     {% if athletes %}
@@ -24,7 +24,7 @@
               <td>{{ athlete.birth_date }}</td>
               <td>{{ athlete.phone_number }}</td>
               <td>
-                <a href="#"><i class="fas fa-user"></i> {{ _('Profile') }}</a>
+                <a href="{% url 'board:athlete_detail' athlete.id %}"><i class="fas fa-user"></i> {{ _('Profile') }}</a>
               </td>
             </tr>
         {% endfor %}
