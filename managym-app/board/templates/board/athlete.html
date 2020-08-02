@@ -1,5 +1,10 @@
 {% extends "base.html" %}
+{% load static %}
 
+{% block title %}Athlete detail - Managym{% endblock title %}
+{% block stylesheet %}
+<link rel="stylesheet" href="{% static 'board/css/athlete.css' %}" />
+{% endblock %}
 {% block content %}
   <!-- Profile of the athlete -->
 <br>	  
@@ -74,3 +79,6 @@
   </div>
 </div>
 {% endblock %}
+{% block javascript %}
+  <script src="{% static 'board/js/athleteTarget.js' %}"></script>
+{% endblock  %}

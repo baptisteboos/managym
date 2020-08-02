@@ -20,20 +20,32 @@
 			</tr>
 		</thead>
 		<tbody>
-			{% for target in event.targetresult_set.all %}
-			<tr class="apparatus {{ target.apparatus.pk }}">
-				<th class="active">{{ target.apparatus.name }}</th>
+			{% for target in event.targets_results %}
+			<tr class="apparatus {{ target.apparatus__id}}">
+				<th class="active">{{ target.apparatus__name }}</th>
 				<td class="tsv" contenteditable="True">{{ target.target_sv }}</td>
 				<td class="tex" contenteditable="True">{{ target.target_ex }}</td>
-				<td class="ttot"></td>
+				<td class="ttot total-color"></td>
 				<td class="rsv" contenteditable="True">{{ target.result_sv }}</td>
-				<td class="trsv active"></td>
+				<td class="trsv active percentage-score"></td>
 				<td class="rex" contenteditable="True">{{ target.result_ex }}</td>
-				<td class="trex active"></td>
-				<td class="rtot"></td>
-				<td class="trtot active"></td>
+				<td class="trex active percentage-score"></td>
+				<td class="rtot total-color"></td>
+				<td class="trtot active percentage-score"></td>
 			</tr>
 			{% endfor %}
+			<tr class="total-event active total-color">
+				<th>{{ _('Total') }}</th>
+				<td class="tsvtot"></td>
+				<td class="textot"></td>
+				<td class="target-total"></td>
+				<td class="rsvtot"></td>
+				<td class="trsvtot"></td>
+				<td class="rextot"></td>
+				<td class="trextot"></td>
+				<td class="result-total"></td>
+				<td class="target-result-total"></td>
+			</tr>	
 		</tbody>
 	</table>
 </div>

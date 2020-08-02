@@ -1,20 +1,31 @@
-<form action="{% url 'board:athlete_new_target' athlete_id=athlete.pk %}" method="post" class="form-inline">
-  {% csrf_token %}
-  {{ form.non_field_errors }}
-  <div class="fieldWrapper">
-    {{ form.event.errors }}
-    {{ form.event }}
+<div class="row">
+  <div class="col-6">
+  {% if form.event %}
+    <form action="{% url 'board:athlete_new_target' athlete_id=athlete.pk %}" method="post" class="form-inline">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+      <div class="fieldWrapper">
+        {{ form.event.errors }}
+        {{ form.event }}
+      </div>
+      <input type="submit" value="Add target" class="btn btn-primary">
+    </form> 
+  {% endif %}
   </div>
-  <input type="submit" value="Add target" class="btn btn-primary">
-</form>
-<div class="accordion" id="accordionTargetResults">
+  <div class="col-6 text-right">
+    <button id="btn-graphs" class="btn btn-warning" data-toggle="modal" data-target="#modLineChart">{{ _('Graph of events') }}</button>
+  </div>
+  {% include "board/athlete-graph.html" %}
+</div>
+
+<div class="accordion" id="accordionTargetResults" data-update-target-url={% url 'board:athlete_update_target' athlete.id %}>
   {% for event in events_participated %}
   <div class="card">
     <div class="card-header" id="headingEvent{{ event.id }}">
       <h2 class="mb-0">
         <button class="btn btn-link btn-lg text-left" type="button" data-toggle="collapse" data-target="#collapseEvent{{ event.id }}" 
         aria-expanded="alse" aria-controls="collapseEvent{{ event.id }}">
-          {{ event.name }} - {{ event.date|date:"Y" }}
+          {{ event.name }} - {{ event.date|date:'Y' }}
         </button>
       </h2>
     </div>

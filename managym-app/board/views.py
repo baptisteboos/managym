@@ -1,14 +1,12 @@
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.views.decorators.http import require_POST 
 from django.contrib.auth.decorators import login_required
 
-from .models import Athlete, Event
+from .models import Athlete, Event, TargetResult
 from .forms import NewTargetForm
 
-@login_required
 def index(request):
     athletes = Athlete.objects.all()
     context = {
@@ -20,7 +18,7 @@ def index(request):
 
 
 @login_required
-def athlete_listing(request):
+def athletes_listing(request):
     athletes_list = Athlete.objects.order_by('last_name', 'first_name')
     # Slices pages
     paginator = Paginator(athletes_list, 25)
@@ -42,9 +40,14 @@ def athlete_listing(request):
 @login_required
 def athlete_detail(request, athlete_id):
     athlete = get_object_or_404(Athlete, id=athlete_id)
-    events_participated = Event.objects.filter(targetresult__athlete__id=athlete_id).distinct().all()
-    new_target_form = NewTargetForm(athlete_id)
-   
+    events_participated = Event.objects.filter(targetresult__athlete=athlete).distinct().all()
+    for event in events_participated:
+        event.targets_results = TargetResult.objects.filter(athlete=athlete, event=event).values(\
+            'target_sv', 'target_ex', 'result_sv', 'result_ex', 'apparatus__id', 'apparatus__name')
+    new_target_form = NewTargetForm()
+    new_target_form.fields['event'].queryset = Event.objects.exclude(
+        targetresult__athlete__id=athlete_id).distinct()
+
 
     context = {
         'title': 'Athlete',
@@ -68,4 +71,25 @@ def athlete_new_target(request, athlete_id):
             [athlete.targetresult_set.create(event_id=event_id, apparatus_id=i, target_sv=0,\
                 target_ex=0, result_sv=0, result_ex=0) for i in [1,4,7,8]] 
     return redirect(reverse('board:athlete_detail', args=[athlete_id]))
+
+def athlete_update_target(request, athlete_id):
+    if request.is_ajax and request.method == "POST":
+        event_id = request.POST.get('event_id', None)
+        apparatus_id = request.POST.get('apparatus_id', None)
+        target_result = TargetResult.objects.get(athlete__id=athlete_id, event__id=event_id, \
+                                                      apparatus__id=apparatus_id)
+        target_result.target_sv = request.POST.get('tsv', None)
+        target_result.target_ex = request.POST.get('tex', None)
+        target_result.result_sv = request.POST.get('rsv', None)
+        target_result.result_ex = request.POST.get('rex', None)
+
+    # athlete_event = AthleteEvent.query.filter_by(athlete_id=id, \
+    #                                              event_id=event_id).first()
+    # athlete_event.target_total = request.form['target']
+    # athlete_event.result_total = request.form['result']
+    target_result.save()
+    data = {
+        'success': 'success'
+    }
+    return JsonResponse(data)
 
