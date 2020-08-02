@@ -3,6 +3,12 @@ from hashlib import md5
 from django.db import models
 from django.contrib.auth.models import User
 from dj.choices import Choices, Choice
+from django.db.models import Func
+
+class Round2(Func):
+  function = 'ROUND'
+  arity = 2
+
 
 
 class TargetResult(models.Model):

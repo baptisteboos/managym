@@ -1,11 +1,11 @@
 <div class="modal fade" id="modLineChart" tabindex="-1" role="dialog" aria-labelledby="modLineChartLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
+                <h4 class="modal-title" id="modLineChartLabel">{{ _("Graph of targets and results of all events") }}</h4>
                 <button type="button" class="close" data-dismiss="modal">
                     <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
                 </button>
-                <h4 class="modal-title" id="modLineChartLabel">Graph of target / results of all events</h4>
             </div>
             <div class="modal-body">
                 <canvas id="myLineChart" width="800" height="450"></canvas>

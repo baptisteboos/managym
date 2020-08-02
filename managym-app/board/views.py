@@ -3,8 +3,9 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.auth.decorators import login_required
+from django.db.models import Sum, F
 
-from .models import Athlete, Event, TargetResult
+from .models import Athlete, Event, TargetResult, Round2
 from .forms import NewTargetForm
 
 def index(request):
@@ -92,4 +93,27 @@ def athlete_update_target(request, athlete_id):
         'success': 'success'
     }
     return JsonResponse(data)
+
+def athlete_graph_get_data(request, athlete_id):
+    labels = []
+    targets_list = []
+    results_list = []
+    success = []
+
+    queryset = TargetResult.objects.filter(athlete__id=athlete_id).values(\
+        'event__name').annotate(target_total=Round2(Sum('target_sv') + Sum('target_ex'), 2),
+                                result_total=Round2(Sum('result_sv') + Sum('result_ex'), 2), 
+                                success=Round2(F('result_total') / F('target_total') * 100, 2))
+    for entry in queryset:
+        labels.append(entry['event__name'])
+        targets_list.append(entry['target_total'])
+        results_list.append(entry['result_total'])
+        success.append(entry['success'])
+    
+    return JsonResponse(data={
+        'labels': labels,
+        'targets': targets_list,
+        'results': results_list,
+        'success': success
+    })
 
