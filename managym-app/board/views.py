@@ -1,42 +1,42 @@
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+from django.views.generic import ListView
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, F
 
 from .models import Athlete, Event, TargetResult, Round2
 from .forms import NewTargetForm
 
 def index(request):
-    athletes = Athlete.objects.all()
-    context = {
-    	'title': 'Home',
-       	'name': 'Baptiste',
-       	'athletes': athletes
-       }
-    return render(request, 'board/index.html', context)
+    return render(request, 'board/index.html', {})
 
+@method_decorator(login_required, name='dispatch')
+class BoardListView(ListView):
+    # model = Athlete
+    context_object_name = 'athletes'
+    template_name = 'board/board.html'
+    paginate_by = 20
 
-@login_required
-def athletes_listing(request):
-    athletes_list = Athlete.objects.order_by('last_name', 'first_name')
-    # Slices pages
-    paginator = Paginator(athletes_list, 25)
-    # Get current page number
-    page = request.GET.get('page')
-    try:
-    	athletes = paginator.page(page)
-    except PageNotAnInteger:
-    	athletes = paginator.page(1)
-    except EmptyPage:
-    	# If page is out of range (e.g. 9999), delivers last page of results
-        athletes = paginator.page(paginator.num_pages)
-    context = {
-    	'title': 'Listing',
-    	'athletes': athletes
-    }
-    return render(request, 'board/athletes.html', context)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['user'] = self.request.user
+        return context
+
+    def get_queryset(self):
+        queryset = Athlete.objects.filter(
+            group__trainers__id=self.request.user.pk).order_by('first_name', 'last_name')
+        return queryset
+
+@method_decorator(login_required, name='dispatch')
+class AthletesListView(ListView):
+    # model = Athlete
+    context_object_name = 'athletes'
+    template_name = 'board/athletes.html'
+    paginate_by = 20
+    queryset = Athlete.objects.order_by('first_name', 'last_name')
+
 
 @login_required
 def athlete_detail(request, athlete_id):

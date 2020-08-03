@@ -50,22 +50,11 @@
     </table>
   </div>
   <!-- Pagination -->
-  <div>
-  <nav aria-label="...">
-    <ul class="pagination justify-content-end">
-      <li class="page-item {% if not athletes.has_previous %}disabled{% endif %}">
-        <a class="page-link" href="{% if athletes.has_previous %}
-        ?page={{ athletes.previous_page_number }}{% endif%}">{{ _('Previous') }}</a>
-      </li>
-      <li class="page-item {% if not athletes.has_next %}disabled{% endif %}">
-        <a class="page-link" href="{% if athletes.has_next %}
-        ?page={{ athletes.next_page_number }}{% endif%}">{{ _('Next') }}</a>
-      </li>
-    </ul>
-  </nav>
-  </div>
+  {% if is_paginated %}
+    {% include "board/pagination.html" %}
+  {% endif %}
 </div>
 {% else %}
-<p>{{ _('No athlete') }}</p>
+<p>{{ _('No athlete.') }}</p>
 {% endif %}
 {% endblock %}

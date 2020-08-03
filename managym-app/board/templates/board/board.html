@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="row">
+    <h1>{{ _('Hello') }} {{ user.first_name }}</h1>
+    {% if athletes %}
+    <br>
+    <div class="table-responsive">
+      <table class="table table-hover text-center">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col" class="text-center">{{ _('First') }}</th>
+            <th scope="col" class="text-center">{{ _('Last') }}</th>
+            <th scope="col" class="text-center">{{ _('Date of birth') }}</th>
+            <th scope="col" class="text-center">{{ _('Phone') }}</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for athlete in athletes %}
+            <tr>
+              <td>{{ athlete.first_name }}</td>
+              <td>{{ athlete.last_name }}</td>
+              <td>{{ athlete.birth_date }}</td>
+              <td>{{ athlete.phone_number }}</td>
+              <td>
+                <a href="{% url 'board:athlete_detail' athlete.id %}"><i class="fas fa-user"></i> {{ _('Profile') }}</a>
+              </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% if is_paginated %}
+      {% include "board/pagination.html" %}
+    {% endif %}
+    {% else %}
+    <br>
+    <h4>{{ _('You have no athlete in your group.') }}</h4>
+    {% endif %}
+  </div>
+{% endblock %}

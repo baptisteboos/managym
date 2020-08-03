@@ -1,0 +1,33 @@
+<div>
+  <nav>
+    <ul class="pagination">
+      {% if page_obj.has_previous %}
+        <li class="page-item">
+          <a href="?page={{ page_obj.previous_page_number }}" class="page-link">{{_('Previous') }}</a>
+        </li>
+      {% else %}
+        <li class="page-item disabled">
+          <span class="page-link">{{ _('Previous') }}</span>
+        </li>
+      {% endif %}
+
+      {% if page_obj.has_next %}
+        <li class="page-item">
+          <a href="?page={{ page_obj.next_page_number }}" class="page-link">{{_('Next') }}</a>
+        </li>
+      {% else %}
+        <li class="page-item disabled">
+          <span class="page-link">{{ _('Next') }}</span>
+        </li>
+      {% endif %}
+      <!--<li class="page-item {% if not athletes.has_previous %}disabled{% endif %}">
+        <a class="page-link" href="{% if athletes.has_previous %}
+        ?page={{ athletes.previous_page_number }}{% endif%}">{{ _('Previous') }}</a>
+      </li> -
+      <li class="page-item {% if not athletes.has_next %}disabled{% endif %}">
+        <a class="page-link" href="{% if athletes.has_next %}
+        ?page={{ athletes.next_page_number }}{% endif%}">{{ _('Next') }}</a>
+      </li> -->
+    </ul>
+  </nav>
+</div>
