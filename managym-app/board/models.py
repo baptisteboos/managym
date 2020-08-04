@@ -17,10 +17,10 @@ class TargetResult(models.Model):
     athlete = models.ForeignKey('Athlete', on_delete=models.DO_NOTHING)
     apparatus = models.ForeignKey('Apparatus', on_delete=models.DO_NOTHING)
     event = models.ForeignKey('Event', on_delete=models.DO_NOTHING)
-    target_sv = models.FloatField(null=True, blank=True)
-    target_ex = models.FloatField(null=True, blank=True)
-    result_sv = models.FloatField(null=True, blank=True)
-    result_ex = models.FloatField(null=True, blank=True)
+    target_sv = models.FloatField(default=0)
+    target_ex = models.FloatField(default=0)
+    result_sv = models.FloatField(default=0)
+    result_ex = models.FloatField(default=0)
 
     class Meta:
         verbose_name = "TargetResult"

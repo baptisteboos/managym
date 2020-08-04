@@ -51,7 +51,6 @@ def athlete_detail(request, athlete_id):
 
 
     context = {
-        'title': 'Athlete',
         'athlete': athlete,
         'events_participated': events_participated,
         'form': new_target_form

@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.contrib.auth.models import User
 from django.urls import resolve, reverse
 from django.test import TestCase, tag
@@ -54,7 +56,7 @@ class AthletesViewTests(TestCase):
         If athletes, display list of athletes valid link of profile
         """
         athlete = Athlete.objects.create(first_name="Bob", last_name="Marley",
-            birth_date="1945-02-06", gender=1)
+            birth_date=date.fromisoformat("1945-02-06"), gender=1)
         response = self.client.get(reverse('board:athletes_listing'))
         self.assertQuerysetEqual(response.context['athletes'], ['<Athlete: Bob Marley>'])
         athlete_url = reverse('board:athlete_detail', kwargs={'athlete_id': athlete.id})

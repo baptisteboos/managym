@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.contrib.auth.models import User
 from django.urls import resolve, reverse
 from django.test import TestCase, tag
@@ -54,7 +56,7 @@ class BoardViewTests(TestCase):
          If no athlete in groups of user, display nothing
         """
         Athlete.objects.create(first_name="Bob", last_name="Marley",
-            birth_date="1945-02-06", gender=1)
+            birth_date=date.fromisoformat("1945-02-06"), gender=1)
         response = self.client.get(reverse('board:board'))
         self.assertContains(response, "You have no athlete in your group.")
         self.assertQuerysetEqual(response.context['athletes'], [])
@@ -64,7 +66,7 @@ class BoardViewTests(TestCase):
         If athletes in groups of user, display profile of athlete + valid link of profile
         """
         athlete = Athlete.objects.create(first_name="Bob", last_name="Marley",
-            birth_date="1945-02-06", gender=1, group=self.group)
+            birth_date=date.fromisoformat("1945-02-06"), gender=1, group=self.group)
         response = self.client.get(reverse('board:board'))
         self.assertQuerysetEqual(response.context['athletes'], ['<Athlete: Bob Marley>'])
         athlete_url = reverse('board:athlete_detail', kwargs={'athlete_id': athlete.id})
