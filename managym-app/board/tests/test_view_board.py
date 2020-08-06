@@ -69,5 +69,5 @@ class BoardViewTests(TestCase):
             birth_date=date.fromisoformat("1945-02-06"), gender=1, group=self.group)
         response = self.client.get(reverse('board:board'))
         self.assertQuerysetEqual(response.context['athletes'], ['<Athlete: Bob Marley>'])
-        athlete_url = reverse('board:athlete_detail', kwargs={'athlete_id': athlete.id})
+        athlete_url = reverse('board:athlete-detail', kwargs={'athlete_id': athlete.id})
         self.assertContains(response, f'<a href="{athlete_url}">')

@@ -24,7 +24,7 @@
               <td>{{ athlete.birth_date }}</td>
               <td>{{ athlete.phone_number }}</td>
               <td>
-                <a href="{% url 'board:athlete_detail' athlete.id %}"><i class="fas fa-user"></i> {{ _('Profile') }}</a>
+                <a href="{% url 'board:athlete-detail' athlete.id %}"><i class="fas fa-user"></i> {{ _('Profile') }}</a>
               </td>
             </tr>
         {% endfor %}

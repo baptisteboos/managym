@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.urls import resolve, reverse
 from django.test import TestCase, tag
 
-from ..views import AthletesListView
+from ..views import AthleteListView
 from ..models import Athlete
 
 
@@ -23,7 +23,7 @@ class AthletesViewTests(TestCase):
         """
         If a user is not authenticated, the page is forbidden
         """
-        response = self.client.get(reverse('board:athletes_listing'))
+        response = self.client.get(reverse('board:athlete-list'))
         self.assertEquals(response.status_code, 302)
 
 
@@ -31,7 +31,7 @@ class AthletesViewTests(TestCase):
         """
         If a user is authenticated, the page is available
         """
-        response = self.client.get(reverse('board:athletes_listing'))
+        response = self.client.get(reverse('board:athlete-list'))
         self.assertEquals(response.status_code, 200)
 
 
@@ -40,13 +40,13 @@ class AthletesViewTests(TestCase):
         Check if the url of the board match with the function representing the view
         """
         view = resolve('/board/athletes/')
-        self.assertEquals(view.func.view_class, AthletesListView)
+        self.assertEquals(view.func.view_class, AthleteListView)
 
     def test_no_athlete(self):
         """
         If no athlete, display nothing
         """
-        response = self.client.get(reverse('board:athletes_listing'))
+        response = self.client.get(reverse('board:athlete-list'))
         self.assertContains(response, "No athlete.")
         self.assertQuerysetEqual(response.context['athletes'], [])
 
@@ -57,7 +57,10 @@ class AthletesViewTests(TestCase):
         """
         athlete = Athlete.objects.create(first_name="Bob", last_name="Marley",
             birth_date=date.fromisoformat("1945-02-06"), gender=1)
-        response = self.client.get(reverse('board:athletes_listing'))
-        self.assertQuerysetEqual(response.context['athletes'], ['<Athlete: Bob Marley>'])
-        athlete_url = reverse('board:athlete_detail', kwargs={'athlete_id': athlete.id})
+        athlete = Athlete.objects.create(first_name="Fred", last_name="Doe",
+            birth_date=date.fromisoformat("1993-09-01"), gender=1)
+        response = self.client.get(reverse('board:athlete-list'))
+        self.assertQuerysetEqual(response.context['athletes'],
+            ['<Athlete: Bob Marley>', '<Athlete: Fred Doe>'])
+        athlete_url = reverse('board:athlete-detail', kwargs={'athlete_id': athlete.id})
         self.assertContains(response, f'<a href="{athlete_url}">')

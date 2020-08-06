@@ -1,0 +1,62 @@
+<button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#save-injury">{{ _('Add injury') }}</button>
+
+{% with athlete.information.all as information_all %} 
+{% if information_all %}
+<table class="table table-hover" id="tblInjuriesData">
+	<tbody>
+  {% for information in information_all %}
+    <tr data-info-id="{{ information.id }}">
+      <td class="col-sm-11">
+        <p>
+          <b>{{ information.author.first_name }} {{ information.author.last_name }}
+            - {{ information.timestamp }}:</b>
+        <p>
+        <div class="information-body">
+          {{ information.body }}
+        <div>
+      </td>
+      <td class="col-sm-1 text-right">
+          <!-- Call to action buttons -->
+        <button type="button" class="btn btn-sm rounded-0 btn-edit" data-toggle="modal" data-target="#save-injury" data-information-id="{{ information.pk }}"><i class="fas fa-edit"></i></button>
+      </td>
+    </tr>
+  {% endfor %}
+	</tbody>
+</table>
+{% else %}
+<br>  
+<h3 class="text-center">{{ _('This athlete has no injury yet.') }}</h3> 
+{% endif %}
+{% endwith %}
+
+<div class="modal fade" id="save-injury" tabindex="-1" role="dialog" aria-labelledby="new-injury" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ _('New injury') }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form method="post" action="{% url 'board:athlete-save-information' athlete.pk %}" novalidate>
+      <div class="modal-body">
+		    {% csrf_token %}
+		    {{ new_information_form.non_field_errors }}
+				<div class="fieldWrapper">
+			    {{ new_information_form.body.errors }}
+          <div class="form-group">
+			      {{ new_information_form.body }}
+          </div>
+				</div>
+        {{ new_information_form.information_id }}
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">{{ _('Save injury') }}</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ _('Close') }}</button>
+      </div>
+		 	</form>
+    </div>
+  </div>
+</div>
+
+

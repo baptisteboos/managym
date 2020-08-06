@@ -10,7 +10,6 @@ class Round2(Func):
   arity = 2
 
 
-
 class TargetResult(models.Model):
     """Model representing the target/results for an athlete on an event on an apparatus."""
 
@@ -137,13 +136,14 @@ class Information(models.Model):
 
     body = models.TextField(max_length=1000)
     timestamp = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    author = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     type = models.ForeignKey('TypeInformation', on_delete=models.DO_NOTHING)
-    athlete = models.ForeignKey('Athlete', on_delete=models.CASCADE)
+    athlete = models.ForeignKey('Athlete', on_delete=models.CASCADE, related_name='information')
 
     class Meta:
         verbose_name = "Information"
         verbose_name_plural = "Information"
+        ordering = ['-timestamp']
 
     def __str__(self):
         return self.body

@@ -1,20 +1,21 @@
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
+from django.utils import timezone
 from django.db.models import Sum, F
 
-from .models import Athlete, Event, TargetResult, Round2
-from .forms import NewTargetForm
+from .models import Athlete, Event, TargetResult, Round2, Information,\
+    TypeInformation
+from .forms import NewTargetForm, SaveInformationForm
 
 def index(request):
     return render(request, 'board/index.html', {})
 
 @method_decorator(login_required, name='dispatch')
 class BoardListView(ListView):
-    # model = Athlete
     context_object_name = 'athletes'
     template_name = 'board/board.html'
     paginate_by = 20
@@ -30,7 +31,7 @@ class BoardListView(ListView):
         return queryset
 
 @method_decorator(login_required, name='dispatch')
-class AthletesListView(ListView):
+class AthleteListView(ListView):
     # model = Athlete
     context_object_name = 'athletes'
     template_name = 'board/athletes.html'
@@ -38,24 +39,27 @@ class AthletesListView(ListView):
     queryset = Athlete.objects.order_by('first_name', 'last_name')
 
 
-@login_required
-def athlete_detail(request, athlete_id):
-    athlete = get_object_or_404(Athlete, id=athlete_id)
-    events_participated = Event.objects.filter(targetresult__athlete=athlete).distinct().all()
-    for event in events_participated:
-        event.targets_results = TargetResult.objects.filter(athlete=athlete, event=event).values(\
-            'target_sv', 'target_ex', 'result_sv', 'result_ex', 'apparatus__id', 'apparatus__name')
-    new_target_form = NewTargetForm()
-    new_target_form.fields['event'].queryset = Event.objects.exclude(
-        targetresult__athlete__id=athlete_id).distinct()
+@method_decorator(login_required, name='dispatch')
+class AthleteDetailView(DetailView):
+    model = Athlete
+    context_object_name = 'athlete'
+    pk_url_kwarg = 'athlete_id' 
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        athlete = self.get_object()
+        events_participated = Event.objects.filter(targetresult__athlete=athlete).distinct().all()
+        for event in events_participated:
+            event.targets_results = TargetResult.objects.filter(athlete=athlete, event=event).values(\
+                'target_sv', 'target_ex', 'result_sv', 'result_ex', 'apparatus__id', 'apparatus__name')
+        context['events_participated'] = events_participated
+        new_target_form = NewTargetForm()
+        new_target_form.fields['event'].queryset = Event.objects.exclude(
+            targetresult__athlete=athlete).distinct()
+        context['new_target_form'] = new_target_form
+        context['new_information_form'] = SaveInformationForm()
+        return context
 
-    context = {
-        'athlete': athlete,
-        'events_participated': events_participated,
-        'form': new_target_form
-    }
-    return render(request, 'board/athlete.html', context)
 
 @login_required
 def athlete_new_target(request, athlete_id):
@@ -70,8 +74,9 @@ def athlete_new_target(request, athlete_id):
         elif athlete.gender == 2:
             [athlete.targetresult_set.create(event_id=event_id, apparatus_id=i, target_sv=0,\
                 target_ex=0, result_sv=0, result_ex=0) for i in [1,4,7,8]] 
-    return redirect(reverse('board:athlete_detail', args=[athlete_id]))
+    return redirect(reverse('board:athlete-detail', args=[athlete_id]))
 
+@login_required
 def athlete_update_target(request, athlete_id):
     if request.is_ajax and request.method == "POST":
         event_id = request.POST.get('event_id', None)
@@ -92,6 +97,29 @@ def athlete_update_target(request, athlete_id):
         'success': 'success'
     }
     return JsonResponse(data)
+
+@login_required
+def athlete_save_information(request, athlete_id):
+    athlete = get_object_or_404(Athlete, pk=athlete_id)
+    ty = TypeInformation.objects.get(pk=1)
+    if request.method == 'POST':
+        form = SaveInformationForm(request.POST)
+
+        if form.is_valid():
+            if form.cleaned_data.get('information_id') == 'new':
+                Information.objects.create(
+                    body=form.cleaned_data.get('body'),
+                    athlete=athlete,
+                    author=request.user,
+                    type=ty,
+                    )
+            else:
+                info = Information.objects.get(\
+                        pk=form.cleaned_data.get('information_id'))
+                info.body = form.cleaned_data.get('body')
+                # info.timestamp = timezone.now()
+                info.save()
+    return redirect('board:athlete-detail', athlete_id=athlete_id)
 
 def athlete_graph_get_data(request, athlete_id):
     labels = []

@@ -42,7 +42,7 @@
             <td>{{ athlete.email }}</td>
             <td>{{ athlete.group.name }}</td>
             <td class="text-right">
-              <a href="{% url "board:athlete_detail" athlete.id %}"><span class="fas fa-user"></span> {{ _('Profile') }}</a>
+              <a href="{% url "board:athlete-detail" athlete.pk %}"><span class="fas fa-user"></span> {{ _('Profile') }}</a>
             </td>
           </tr>
       {% endfor %}
