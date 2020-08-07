@@ -4,6 +4,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from dj.choices import Choices, Choice
 from django.db.models import Func
+from django.core.exceptions import ObjectDoesNotExist
 
 class Round2(Func):
   function = 'ROUND'
@@ -58,6 +59,35 @@ class Athlete(models.Model):
         verbose_name = "Athlete"
         verbose_name_plural = "Athletes"
 
+    @property
+    def injuries(self):
+        """
+        Filter information by type: injury
+        If not exists, create the type
+        """
+        try:
+            ty = TypeInformation.objects.get(name='injury')
+        except ObjectDoesNotExist as e:
+            print('<TypeInformation: injury> does not exist.')
+            print('Creation of the type')
+            ty = TypeInformation.objects.create(name='injury')
+        return self.information.filter(type=ty).all()
+        
+    @property
+    def comments(self):
+        """
+        Filter information by type: comments
+        If not exists, create the type
+        """
+
+        try:
+            ty = TypeInformation.objects.get(name='comment')
+        except ObjectDoesNotExist as e:
+            print('<TypeInformation: comment> does not exist.')
+            print('Creation of the type')
+            ty = TypeInformation.objects.create(name='comment')
+        return self.information.filter(type=ty).all()
+
     def __str__(self):
         """String for representing the Athlete object."""
         return f'{self.first_name} {self.last_name}'
@@ -75,6 +105,7 @@ class Athlete(models.Model):
             return 'female'
         else:
             return 'not specified'
+
 
 class Group(models.Model):
     """Model representing a group of athletes."""

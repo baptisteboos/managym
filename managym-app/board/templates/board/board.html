@@ -2,7 +2,9 @@
 
 {% block content %}
   <div class="row">
-    <h1>{{ _('Hello') }} {{ user.first_name }}</h1>
+    <div class="col-12">
+      <h1>{{ _('Hello') }} {{ user.first_name }}</h1> 
+    </div>
     {% if athletes %}
     <br>
     <div class="table-responsive">
@@ -35,8 +37,9 @@
       {% include "board/pagination.html" %}
     {% endif %}
     {% else %}
-    <br>
-    <h4>{{ _('You have no athlete in your group.') }}</h4>
+    <div>
+      <h4>{{ _('You have no athlete in your group.') }}</h4>
+    </div>
     {% endif %}
   </div>
 {% endblock %}

@@ -10,7 +10,7 @@
 {% block javascript %}
   <script src="{% static 'board/js/athleteTarget.js' %}"></script>
   <script src="{% static 'board/js/athleteGraph.js' %}"></script>
-  <script src="{% static 'board/js/athleteInjury.js' %}"></script>
+  <script src="{% static 'board/js/athleteInformation.js' %}"></script>
 {% endblock  %}
 
 {% block content %}
@@ -82,7 +82,7 @@
     {% include "board/_content_injuries_tab.html" %}
   </div>
   <div class="tab-pane fade" id="comments-content" role="tabpanel" aria-labelledby="comments-tab">
-     {# {% include "" %} #}
+     {% include "board/_content_comments_tab.html" %}
   </div>
 </div>
 {% endblock %}

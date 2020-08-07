@@ -100,12 +100,16 @@ def athlete_update_target(request, athlete_id):
 
 @login_required
 def athlete_save_information(request, athlete_id):
+    # injury and comment are both a TypeInformation
+    # (foreign key of Information table)
     athlete = get_object_or_404(Athlete, pk=athlete_id)
-    ty = TypeInformation.objects.get(pk=1)
     if request.method == 'POST':
         form = SaveInformationForm(request.POST)
-
         if form.is_valid():
+            # Get TypeInformation object include in input:hidden
+            ty = TypeInformation.objects.get(\
+                name=form.cleaned_data.get('information_type'))
+            # Check if it's an edit or a new information
             if form.cleaned_data.get('information_id') == 'new':
                 Information.objects.create(
                     body=form.cleaned_data.get('body'),
@@ -116,9 +120,11 @@ def athlete_save_information(request, athlete_id):
             else:
                 info = Information.objects.get(\
                         pk=form.cleaned_data.get('information_id'))
-                info.body = form.cleaned_data.get('body')
-                # info.timestamp = timezone.now()
-                info.save()
+                # Only the author can edit its information
+                if info.author == request.user:
+                    info.body = form.cleaned_data.get('body')
+                    # info.timestamp = timezone.now()
+                    info.save()
     return redirect('board:athlete-detail', athlete_id=athlete_id)
 
 def athlete_graph_get_data(request, athlete_id):

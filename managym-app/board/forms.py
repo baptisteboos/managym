@@ -13,15 +13,20 @@ class SaveInformationForm(forms.Form):
     """
     body = forms.CharField(
         widget=forms.Textarea(
-            attrs={'placeholder': 'What is the injury?',
+            attrs={'placeholder': 'Write your text, you\'re limited to 1000 characters',
             	   'class': 'form-control'}
         	),
         max_length=1000,
-        help_text='The max length of the text is 1000.'
     )
     information_id = forms.CharField(
         widget=forms.TextInput(
             attrs={'type': 'hidden',
                    'id': 'id_information'}
+            )
+        )
+    information_type = forms.CharField(
+        widget=forms.TextInput(
+            attrs={'type': 'hidden',
+                    'id': 'type_information'}
             )
         )

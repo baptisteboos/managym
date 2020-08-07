@@ -1,6 +1,6 @@
-<button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#save-injury">{{ _('Add injury') }}</button>
+<button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#save-comment">{{ _('Add comment') }}</button>
 
-{% with athlete.injuries as information_all %} 
+{% with athlete.comments as information_all %} 
 {% if information_all %}
 <table class="table table-hover">
 	<tbody>
@@ -18,7 +18,7 @@
       <td class="col-sm-1 text-right">
           <!-- Call to action buttons -->
         {% if information.author == user %}
-        <button type="button" class="btn btn-sm rounded-0 btn-edit" data-toggle="modal" data-target="#save-injury" data-information-id="{{ information.pk }}"><i class="fas fa-edit"></i></button>
+        <button type="button" class="btn btn-sm rounded-0 btn-edit" data-toggle="modal" data-target="#save-comment" data-information-id="{{ information.pk }}"><i class="fas fa-edit"></i></button> 
         {% endif %}
       </td>
     </tr>
@@ -27,15 +27,15 @@
 </table>
 {% else %}
 <br>  
-<h3 class="text-center">{{ _('This athlete has no injury yet.') }}</h3> 
+<h3 class="text-center">{{ _('This athlete has no comment yet.') }}</h3> 
 {% endif %}
 {% endwith %}
 
-<div class="modal fade" id="save-injury" tabindex="-1" role="dialog" aria-labelledby="new-injury" aria-hidden="true">
+<div class="modal fade" id="save-comment" tabindex="-1" role="dialog" aria-labelledby="new-information" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">{{ _('New injury') }}</h5>
+        <h5 class="modal-title">{{ _('New comment') }}</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -54,7 +54,7 @@
         {{ new_information_form.information_type }}
       </div>
       <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">{{ _('Save injury') }}</button>
+        <button type="submit" class="btn btn-primary">{{ _('Save comment') }}</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ _('Close') }}</button>
       </div>
 		 	</form>
