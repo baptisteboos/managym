@@ -6,7 +6,7 @@ $('#save-injury').on('show.bs.modal', function (event) {
   modal.find('.modal-title').text(id ? 'Edit injury' : 'New injury');
   modal.find('#type_information').val('injury');
   if (id) {
-  	var body = $(button).parent().parent().find('.information-body').text();
+  	var body = $(button).data('information-body');
   	modal.find('#id_body').val(body);
   	modal.find('#id_information').val(id);
   } else {
@@ -23,7 +23,7 @@ $('#save-comment').on('show.bs.modal', function (event) {
   modal.find('.modal-title').text(id ? 'Edit comment' : 'New comment');
   modal.find('#type_information').val('comment');
   if (id) {
-  	var body = $(button).parent().parent().find('.information-body').text();
+  	var body = $(button).data('information-body');
   	modal.find('#id_body').val(body);
   	modal.find('#id_information').val(id)
   } else {

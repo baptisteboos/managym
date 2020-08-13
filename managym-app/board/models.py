@@ -5,6 +5,9 @@ from django.contrib.auth.models import User
 from dj.choices import Choices, Choice
 from django.db.models import Func
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils.html import mark_safe
+
+from markdown import markdown
 
 class Round2(Func):
   function = 'ROUND'
@@ -178,6 +181,9 @@ class Information(models.Model):
 
     def __str__(self):
         return self.body
+
+    def get_body_as_markdown(self):
+        return mark_safe(markdown(self.body, safe_mode='escape'))
     
 class TypeInformation(models.Model):
     """Model representing a type on information."""

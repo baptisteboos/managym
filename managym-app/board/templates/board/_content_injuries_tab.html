@@ -12,13 +12,13 @@
             - {{ information.timestamp }}:</b>
         <p>
         <div class="information-body">
-          {{ information.body }}
+          {{ information.get_body_as_markdown }}
         <div>
       </td>
       <td class="col-sm-1 text-right">
           <!-- Call to action buttons -->
         {% if information.author == user %}
-        <button type="button" class="btn btn-sm rounded-0 btn-edit" data-toggle="modal" data-target="#save-injury" data-information-id="{{ information.pk }}"><i class="fas fa-edit"></i></button>
+        <button type="button" class="btn btn-sm rounded-0 btn-edit" data-toggle="modal" data-target="#save-injury" data-information-id="{{ information.pk }}" data-information-body="{{ information.body }}"><i class="fas fa-edit"></i></button>
         {% endif %}
       </td>
     </tr>

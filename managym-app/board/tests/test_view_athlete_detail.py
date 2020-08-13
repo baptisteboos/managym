@@ -122,13 +122,11 @@ class AthleteDetailViewTests(TestCase):
         response = self.client.get(reverse('board:athlete-detail',
             kwargs={'athlete_id': self.athlete.id})) 
         self.assertContains(response, f'This athlete has no injury yet.')
-        # self.assertQuerysetEqual(response.context['athlete'].informatio,
-        #     ['<Athlete: Bob Marley>', '<Athlete: Fred Doe>'])
 
 
-    def test_athlete_with_injuries(self):
-        """
-        If an athlete has some injuries show all messages with the most recent first
-        """
-        ty = TypeInformation.objects.create(name='Injury')
-        info = Information(body="Wrist injury", type=ty, author=self.user, athlete=self.athlete)
+    # def test_athlete_with_injuries(self):
+    #     """
+    #     If an athlete has some injuries show all messages with the most recent first
+    #     """
+    #     ty = TypeInformation.objects.create(name='Injury')
+    #     info = Information(body="Wrist injury", type=ty, author=self.user, athlete=self.athlete)

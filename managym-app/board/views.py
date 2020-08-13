@@ -5,7 +5,7 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from django.utils import timezone
-from django.db.models import Sum, F
+from django.db.models import Sum, F, Q
 
 from .models import Athlete, Event, TargetResult, Round2, Information,\
     TypeInformation
@@ -36,7 +36,17 @@ class AthleteListView(ListView):
     context_object_name = 'athletes'
     template_name = 'board/athletes.html'
     paginate_by = 20
-    queryset = Athlete.objects.order_by('first_name', 'last_name')
+
+    def get_queryset(self):
+        query_list = self.request.GET.get('q')
+        if query_list:
+            query = Q()
+            for item in query_list.split():
+                query = query | Q(first_name__icontains=item) | Q(last_name__icontains=item)
+            result = Athlete.objects.filter(query)
+        else:
+            result = Athlete.objects
+        return result.order_by('first_name', 'last_name')
 
 
 @method_decorator(login_required, name='dispatch')
